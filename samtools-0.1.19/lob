@@ -1,0 +1,83 @@
+make[1]: Entering directory `/home/xuxiong/work/c/samtools-0.1.19'
+make[2]: Entering directory `/home/xuxiong/work/c/samtools-0.1.19'
+gcc -c -g -Wall -O2 -fPIC -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE -D_USE_KNETFILE -D_CURSES_LIB=1 -DBGZF_CACHE -I. -I/share/software/software/zlib_1.2.8_install/include bgzf.c -o bgzf.o
+gcc -c -g -Wall -O2 -fPIC -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE -D_USE_KNETFILE -D_CURSES_LIB=1 -I. -I/share/software/software/zlib_1.2.8_install/include kstring.c -o kstring.o
+gcc -c -g -Wall -O2 -fPIC -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE -D_USE_KNETFILE -D_CURSES_LIB=1 -I. -I/share/software/software/zlib_1.2.8_install/include bam_aux.c -o bam_aux.o
+gcc -c -g -Wall -O2 -fPIC -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE -D_USE_KNETFILE -D_CURSES_LIB=1 -I. -I/share/software/software/zlib_1.2.8_install/include bam.c -o bam.o
+gcc -c -g -Wall -O2 -fPIC -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE -D_USE_KNETFILE -D_CURSES_LIB=1 -I. -I/share/software/software/zlib_1.2.8_install/include bam_import.c -o bam_import.o
+gcc -c -g -Wall -O2 -fPIC -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE -D_USE_KNETFILE -D_CURSES_LIB=1 -I. -I/share/software/software/zlib_1.2.8_install/include sam.c -o sam.o
+gcc -c -g -Wall -O2 -fPIC -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE -D_USE_KNETFILE -D_CURSES_LIB=1 -I. -I/share/software/software/zlib_1.2.8_install/include bam_index.c -o bam_index.o
+gcc -c -g -Wall -O2 -fPIC -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE -D_USE_KNETFILE -D_CURSES_LIB=1 -I. -I/share/software/software/zlib_1.2.8_install/include bam_pileup.c -o bam_pileup.o
+gcc -c -g -Wall -O2 -fPIC -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE -D_USE_KNETFILE -D_CURSES_LIB=1 -I. -I/share/software/software/zlib_1.2.8_install/include bam_lpileup.c -o bam_lpileup.o
+gcc -c -g -Wall -O2 -fPIC -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE -D_USE_KNETFILE -D_CURSES_LIB=1 -I. -I/share/software/software/zlib_1.2.8_install/include bam_md.c -o bam_md.o
+gcc -c -g -Wall -O2 -fPIC -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE -D_USE_KNETFILE -D_CURSES_LIB=1 -I. -I/share/software/software/zlib_1.2.8_install/include razf.c -o razf.o
+gcc -c -g -Wall -O2 -fPIC -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE -D_USE_KNETFILE -D_CURSES_LIB=1 -I. -I/share/software/software/zlib_1.2.8_install/include faidx.c -o faidx.o
+gcc -c -g -Wall -O2 -fPIC -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE -D_USE_KNETFILE -D_CURSES_LIB=1 -I. -I/share/software/software/zlib_1.2.8_install/include bedidx.c -o bedidx.o
+gcc -c -g -Wall -O2 -fPIC -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE -D_USE_KNETFILE -D_CURSES_LIB=1 -I. -I/share/software/software/zlib_1.2.8_install/include knetfile.c -o knetfile.o
+gcc -c -g -Wall -O2 -fPIC -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE -D_USE_KNETFILE -D_CURSES_LIB=1 -I. -I/share/software/software/zlib_1.2.8_install/include bam_sort.c -o bam_sort.o
+gcc -c -g -Wall -O2 -fPIC -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE -D_USE_KNETFILE -D_CURSES_LIB=1 -I. -I/share/software/software/zlib_1.2.8_install/include sam_header.c -o sam_header.o
+gcc -c -g -Wall -O2 -fPIC -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE -D_USE_KNETFILE -D_CURSES_LIB=1 -I. -I/share/software/software/zlib_1.2.8_install/include bam_reheader.c -o bam_reheader.o
+gcc -c -g -Wall -O2 -fPIC -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE -D_USE_KNETFILE -D_CURSES_LIB=1 -I. -I/share/software/software/zlib_1.2.8_install/include kprobaln.c -o kprobaln.o
+gcc -c -g -Wall -O2 -fPIC -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE -D_USE_KNETFILE -D_CURSES_LIB=1 -I. -I/share/software/software/zlib_1.2.8_install/include bam_cat.c -o bam_cat.o
+ar -csru libbam.a bgzf.o kstring.o bam_aux.o bam.o bam_import.o sam.o bam_index.o bam_pileup.o bam_lpileup.o bam_md.o razf.o faidx.o bedidx.o knetfile.o bam_sort.o sam_header.o bam_reheader.o kprobaln.o bam_cat.o
+make[2]: Leaving directory `/home/xuxiong/work/c/samtools-0.1.19'
+make[2]: Entering directory `/home/xuxiong/work/c/samtools-0.1.19/bcftools'
+gcc -c -g -Wall -O2 -fPIC -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE -D_USE_KNETFILE -D_CURSES_LIB=1 -I.. -I. -I/share/software/software/zlib_1.2.8_install/include bcf.c -o bcf.o
+gcc -c -g -Wall -O2 -fPIC -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE -D_USE_KNETFILE -D_CURSES_LIB=1 -I.. -I. -I/share/software/software/zlib_1.2.8_install/include vcf.c -o vcf.o
+gcc -c -g -Wall -O2 -fPIC -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE -D_USE_KNETFILE -D_CURSES_LIB=1 -I.. -I. -I/share/software/software/zlib_1.2.8_install/include bcfutils.c -o bcfutils.o
+gcc -c -g -Wall -O2 -fPIC -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE -D_USE_KNETFILE -D_CURSES_LIB=1 -I.. -I. -I/share/software/software/zlib_1.2.8_install/include prob1.c -o prob1.o
+gcc -c -g -Wall -O2 -fPIC -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE -D_USE_KNETFILE -D_CURSES_LIB=1 -I.. -I. -I/share/software/software/zlib_1.2.8_install/include em.c -o em.o
+gcc -c -g -Wall -O2 -fPIC -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE -D_USE_KNETFILE -D_CURSES_LIB=1 -I.. -I. -I/share/software/software/zlib_1.2.8_install/include kfunc.c -o kfunc.o
+gcc -c -g -Wall -O2 -fPIC -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE -D_USE_KNETFILE -D_CURSES_LIB=1 -I.. -I. -I/share/software/software/zlib_1.2.8_install/include kmin.c -o kmin.o
+gcc -c -g -Wall -O2 -fPIC -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE -D_USE_KNETFILE -D_CURSES_LIB=1 -I.. -I. -I/share/software/software/zlib_1.2.8_install/include index.c -o index.o
+gcc -c -g -Wall -O2 -fPIC -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE -D_USE_KNETFILE -D_CURSES_LIB=1 -I.. -I. -I/share/software/software/zlib_1.2.8_install/include fet.c -o fet.o
+gcc -c -g -Wall -O2 -fPIC -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE -D_USE_KNETFILE -D_CURSES_LIB=1 -I.. -I. -I/share/software/software/zlib_1.2.8_install/include mut.c -o mut.o
+gcc -c -g -Wall -O2 -fPIC -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE -D_USE_KNETFILE -D_CURSES_LIB=1 -I.. -I. -I/share/software/software/zlib_1.2.8_install/include bcf2qcall.c -o bcf2qcall.o
+ar -csru libbcf.a bcf.o vcf.o bcfutils.o prob1.o em.o kfunc.o kmin.o index.o fet.o mut.o bcf2qcall.o
+make[2]: Leaving directory `/home/xuxiong/work/c/samtools-0.1.19/bcftools'
+make[2]: Entering directory `/home/xuxiong/work/c/samtools-0.1.19/misc'
+make[2]: Nothing to be done for `lib'.
+make[2]: Leaving directory `/home/xuxiong/work/c/samtools-0.1.19/misc'
+gcc -c -g -Wall -O2 -fPIC -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE -D_USE_KNETFILE -D_CURSES_LIB=1 -I. -I/share/software/software/zlib_1.2.8_install/include bam_tview.c -o bam_tview.o
+gcc -c -g -Wall -O2 -fPIC -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE -D_USE_KNETFILE -D_CURSES_LIB=1 -I. -I/share/software/software/zlib_1.2.8_install/include bam_plcmd.c -o bam_plcmd.o
+gcc -c -g -Wall -O2 -fPIC -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE -D_USE_KNETFILE -D_CURSES_LIB=1 -I. -I/share/software/software/zlib_1.2.8_install/include sam_view.c -o sam_view.o
+gcc -c -g -Wall -O2 -fPIC -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE -D_USE_KNETFILE -D_CURSES_LIB=1 -I. -I/share/software/software/zlib_1.2.8_install/include bam_rmdup.c -o bam_rmdup.o
+gcc -c -g -Wall -O2 -fPIC -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE -D_USE_KNETFILE -D_CURSES_LIB=1 -I. -I/share/software/software/zlib_1.2.8_install/include bam_rmdupse.c -o bam_rmdupse.o
+gcc -c -g -Wall -O2 -fPIC -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE -D_USE_KNETFILE -D_CURSES_LIB=1 -I. -I/share/software/software/zlib_1.2.8_install/include bam_mate.c -o bam_mate.o
+gcc -c -g -Wall -O2 -fPIC -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE -D_USE_KNETFILE -D_CURSES_LIB=1 -I. -I/share/software/software/zlib_1.2.8_install/include bam_stat.c -o bam_stat.o
+gcc -c -g -Wall -O2 -fPIC -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE -D_USE_KNETFILE -D_CURSES_LIB=1 -I. -I/share/software/software/zlib_1.2.8_install/include bam_color.c -o bam_color.o
+gcc -c -g -Wall -O2 -fPIC -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE -D_USE_KNETFILE -D_CURSES_LIB=1 -I. -I/share/software/software/zlib_1.2.8_install/include bamtk.c -o bamtk.o
+gcc -c -g -Wall -O2 -fPIC -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE -D_USE_KNETFILE -D_CURSES_LIB=1 -I. -I/share/software/software/zlib_1.2.8_install/include kaln.c -o kaln.o
+gcc -c -g -Wall -O2 -fPIC -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE -D_USE_KNETFILE -D_CURSES_LIB=1 -I. -I/share/software/software/zlib_1.2.8_install/include bam2bcf.c -o bam2bcf.o
+gcc -c -g -Wall -O2 -fPIC -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE -D_USE_KNETFILE -D_CURSES_LIB=1 -I. -I/share/software/software/zlib_1.2.8_install/include bam2bcf_indel.c -o bam2bcf_indel.o
+gcc -c -g -Wall -O2 -fPIC -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE -D_USE_KNETFILE -D_CURSES_LIB=1 -I. -I/share/software/software/zlib_1.2.8_install/include errmod.c -o errmod.o
+gcc -c -g -Wall -O2 -fPIC -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE -D_USE_KNETFILE -D_CURSES_LIB=1 -I. -I/share/software/software/zlib_1.2.8_install/include sample.c -o sample.o
+gcc -c -g -Wall -O2 -fPIC -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE -D_USE_KNETFILE -D_CURSES_LIB=1 -I. -I/share/software/software/zlib_1.2.8_install/include cut_target.c -o cut_target.o
+gcc -c -g -Wall -O2 -fPIC -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE -D_USE_KNETFILE -D_CURSES_LIB=1 -I. -I/share/software/software/zlib_1.2.8_install/include phase.c -o phase.o
+gcc -c -g -Wall -O2 -fPIC -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE -D_USE_KNETFILE -D_CURSES_LIB=1 -I. -I/share/software/software/zlib_1.2.8_install/include bam2depth.c -o bam2depth.o
+gcc -c -g -Wall -O2 -fPIC -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE -D_USE_KNETFILE -D_CURSES_LIB=1 -I. -I/share/software/software/zlib_1.2.8_install/include padding.c -o padding.o
+gcc -c -g -Wall -O2 -fPIC -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE -D_USE_KNETFILE -D_CURSES_LIB=1 -I. -I/share/software/software/zlib_1.2.8_install/include bedcov.c -o bedcov.o
+gcc -c -g -Wall -O2 -fPIC -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE -D_USE_KNETFILE -D_CURSES_LIB=1 -I. -I/share/software/software/zlib_1.2.8_install/include bamshuf.c -o bamshuf.o
+gcc -c -g -Wall -O2 -fPIC -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE -D_USE_KNETFILE -D_CURSES_LIB=1 -I. -I/share/software/software/zlib_1.2.8_install/include bam_tview_curses.c -o bam_tview_curses.o
+gcc -c -g -Wall -O2 -fPIC -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE -D_USE_KNETFILE -D_CURSES_LIB=1 -I. -I/share/software/software/zlib_1.2.8_install/include bam_tview_html.c -o bam_tview_html.o
+gcc -g -Wall -O2 -fPIC -o samtools bam_tview.o bam_plcmd.o sam_view.o bam_rmdup.o bam_rmdupse.o bam_mate.o bam_stat.o bam_color.o bamtk.o kaln.o bam2bcf.o bam2bcf_indel.o errmod.o sample.o cut_target.o phase.o bam2depth.o padding.o bedcov.o bamshuf.o bam_tview_curses.o bam_tview_html.o  libbam.a -Lbcftools -lbcf -L/share/software/software/zlib_1.2.8_install/lib -lcurses  -lm -lz -lpthread
+make[1]: Leaving directory `/home/xuxiong/work/c/samtools-0.1.19'
+make[1]: Entering directory `/home/xuxiong/work/c/samtools-0.1.19/bcftools'
+gcc -c -g -Wall -O2 -fPIC -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE -D_USE_KNETFILE -D_CURSES_LIB=1 -I.. -I. -I/share/software/software/zlib_1.2.8_install/include call1.c -o call1.o
+gcc -c -g -Wall -O2 -fPIC -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE -D_USE_KNETFILE -D_CURSES_LIB=1 -I.. -I. -I/share/software/software/zlib_1.2.8_install/include main.c -o main.o
+gcc -g -Wall -O2 -fPIC -o bcftools call1.o main.o ../kstring.o ../bgzf.o ../knetfile.o ../bedidx.o -L. -L/share/software/software/zlib_1.2.8_install/lib -lbcf -lm -lz -lpthread
+make[1]: Leaving directory `/home/xuxiong/work/c/samtools-0.1.19/bcftools'
+make[1]: Entering directory `/home/xuxiong/work/c/samtools-0.1.19/misc'
+gcc -c -g -Wall -O2 -fPIC -DMD5SUM_MAIN -o md5sum-lite.o md5.c
+gcc -g -Wall -O2 -fPIC -o md5sum-lite md5sum-lite.o
+gcc -c -g -Wall -O2 -fPIC -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE -D_USE_KNETFILE -D_CURSES_LIB=1 -I. -I/share/software/software/zlib_1.2.8_install/include md5.c -o md5.o
+gcc -g -Wall -O2 -fPIC -c -I.. -o md5fa.o md5fa.c
+gcc -g -Wall -O2 -fPIC -o md5fa md5.o md5fa.o -lz
+gcc -g -Wall -O2 -fPIC -o maq2sam-short maq2sam.c -lz
+gcc -g -Wall -O2 -fPIC -DMAQ_LONGREADS -o maq2sam-long maq2sam.c -lz
+gcc -g -Wall -O2 -fPIC -c -I.. -o ace2sam.o ace2sam.c
+gcc -g -Wall -O2 -fPIC -o ace2sam ace2sam.o -lz
+gcc -g -Wall -O2 -fPIC -c -I.. -o wgsim.o wgsim.c
+gcc -g -Wall -O2 -fPIC -o wgsim wgsim.o -lm -lz
+gcc -g -Wall -O2 -fPIC -c -I. -I/share/software/software/zlib_1.2.8_install/include -o bamcheck.o bamcheck.c
+make[1]: Leaving directory `/home/xuxiong/work/c/samtools-0.1.19/misc'
