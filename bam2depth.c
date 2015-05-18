@@ -239,8 +239,8 @@ void output_bins(DataBuf *databuf,int ref,double *bins,int windows,FILE *stream)
 	for (i=0;i<windows ;i++ ){
 		int window_start=globalArgs.window*i;
 		int window_end=globalArgs.window*(i+1)-1 >databuf->fp->header->target_len[ref] ? databuf->fp->header->target_len[ref] : globalArgs.window*(i+1)-1;
-		fprintf(stream,"%s\t%d\t%d\t%.0f\t%.2f\n",
-			databuf->fp->header->target_name[ref],window_start,window_end,bins[i],bins[i]/globalArgs.window);
+		fprintf(stream,"%s\t%d\t%d\t%.2f\n",
+			databuf->fp->header->target_name[ref],window_start,window_end,bins[i]/globalArgs.window);
 	}
 }
 
