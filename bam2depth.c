@@ -163,7 +163,7 @@ void overlap(int *j,int ref,int *subject_count,DataBuf *databuf,int windows,doub
 						(*subject_count)++;
 						break;
 					}else{
-						bins[(*j)++]+=(window_end-last_start+1)*last_depth;
+						bins[(*j)++]+=(window_end-last_start)*last_depth;
 						(*subject_count)++;
 					}
 				}else{
