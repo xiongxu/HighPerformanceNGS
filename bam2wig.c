@@ -25,12 +25,11 @@ struct globalArgs_t {
 	uint32_t window;
 	const char *region;
 	int strand;
-	int wig;
 } globalArgs;
 
 static inline long long usec(void);
 void output_bins(DataBuf *databuf,int ref,double *bins,int windows,FILE *stream);
-void hash2BedGraph(DataBuf *databuf,int ref,double *bins,int windows,FILE *bedGraph);
+void hash2BedGraph(DataBuf *databuf,int ref,double *bins,int windows);
 static inline void hash_data_delete(void *DATA);
 static inline int chr2int(const char *str);
 static inline void overlap(int *j,int ref,int *subject_count,DataBuf *databuf,int windows,double *bins,uint32_t last_start,uint32_t last_end,double last_depth);
@@ -51,14 +50,13 @@ void display_usage(char * argv[]){
 	const char* usage=
 "\nCopyright (c) 2015\n" \
 "Contact: XiongXu <xuxiong19880610@163.com> <xiongxu@me.com> \n" \
-"Usage: %s [-o OUTFILE] [-w WINDOW_SIZE] [-g gff_file] [-r chr1:1-2000000] [-W is wig] [-s 0] [-h] bamFile1 bamFile2 ..\n" \
+"Usage: %s [-o OUTFILE] [-w WINDOW_SIZE] [-g gff_file] [-r chr1:1-2000000] [-s 0] [-h] bamFile1 bamFile2 ..\n" \
 "Discription:\n  This program is used for converting bam files to bedgraph format files,meanwhile calculate each window's base count and mean depth.\n" \
 "Example1:\n  %s -o out -w 20000 /share/work1/staff/xuxiong/lvliyaELL_L1_I008_tophat_mis2/accepted_hits.bam > depth \n" \
 "Example2:\n  %s -o out -w 20000 /share/work1/staff/xuxiong/twins/batch2/test_20131224/RT144FD_L1_I001.R1.clean.fastq.gz_1224/accepted_hits.bam > depth\n"\
 "\n" \
 "   [-o OUTPUT_FILE]  = OUTPUT file.                                   [required]\n" \
 "   [-w WINDOW_SIZE]  = window size. default is 20000.                 [option]\n" \
-"   [-W is wig]  = whether to generate wig format file. default not.   [option]\n" \
 "   [-r]              = region, default is whole genome.(chr1:1-20000) [option]\n" \
 "   [-s]              = bool variant,strand or not, default is 0.      [option]\n" \
 "   [-h]              = This helpful help screen.                      [option]\n" \
@@ -201,7 +199,7 @@ void hash_data_delete(void *DATA) {
 	free(node);
 }
 
-void hash2BedGraph(DataBuf *databuf,int ref,double *bins,int windows,FILE *bedGraph){
+void hash2BedGraph(DataBuf *databuf,int ref,double *bins,int windows){
 	int all_keys_count=databuf->Start->count+databuf->End->count;
 	if (!all_keys_count) return;
 	int i=0,j=0,prevkey=0,last_start=0,last_end=0,last_depth=0,Count=0,subject_count=0,pos=0;
@@ -215,7 +213,6 @@ void hash2BedGraph(DataBuf *databuf,int ref,double *bins,int windows,FILE *bedGr
 			}
 			else{
 				if (last_depth){
-					fprintf(bedGraph,"%s\t%d\t%d\t%d\n",databuf->fp->header->target_name[ref],last_start,last_end,last_depth);
 					overlap(&j,ref,&subject_count,databuf,windows,bins,last_start,last_end,(double)last_depth);
 				}
 			}
@@ -231,7 +228,6 @@ void hash2BedGraph(DataBuf *databuf,int ref,double *bins,int windows,FILE *bedGr
 	}
 	if (last_depth){
 		overlap(&j,ref,&subject_count,databuf,windows,bins,last_start,last_end,(double)last_depth);
-		fprintf(bedGraph,"%s\t%d\t%d\t%d\n",databuf->fp->header->target_name[ref],last_start,last_end,last_depth);
 	}
 	free(all_keys);
 }
@@ -264,8 +260,7 @@ int main(int argc, char *argv[])
 	globalArgs.window=20000;
 	globalArgs.region="-";
 	globalArgs.strand=0;
-	globalArgs.wig=0;
-	const char *optString = "o:w:r:s:Wh?";
+	const char *optString = "o:w:r:s:h?";
 	if (argc<2) display_usage(argv);
 	opt = getopt( argc, argv, optString );
 	while( opt != -1 ) {
@@ -275,9 +270,6 @@ int main(int argc, char *argv[])
 				break;
 			case 'w':
 				globalArgs.window = atoi(optarg);
-				break;
-			case 'W':
-				globalArgs.wig++;
 				break;
 			case 'r':
 				globalArgs.region = optarg;
@@ -309,17 +301,10 @@ int main(int argc, char *argv[])
 		if (((databuf+i)->fp = samopen(*(globalArgs.infiles+i), "rb", 0)) == 0) {
 			err(1, "bam2bed: Fail to open BAM file %s\n", *(globalArgs.infiles+i));
 		}
-		FILE *WIG=NULL,*bedGraph=NULL,*depth=NULL,*chrSize=NULL;
-		sprintf(suffix,".%u.bedGraph",i+1);
-		bedGraph=fcreat_outfile(basename(*(globalArgs.infiles+i)),suffix);
-		sprintf(suffix,".%u.depth",i+1);
-		depth=fcreat_outfile(globalArgs.outfile,suffix);
-		if (globalArgs.wig){
-			sprintf(suffix,".%u.wig",i+1);
-			WIG=fcreat_outfile(globalArgs.outfile,suffix);
-			sprintf(suffix,".%u.chromSize.txt",i+1);
-			chrSize=fcreat_outfile(globalArgs.outfile,suffix);
-		}
+		sprintf(suffix,".%u.wig",i+1);
+		FILE *wig=fcreat_outfile(globalArgs.outfile,suffix);
+		sprintf(suffix,".%u.chromSize.txt",i+1);
+		FILE *chrSize=fcreat_outfile(globalArgs.outfile,suffix);
 		bam_index_t *idx=load_bam_index(*(globalArgs.infiles+i));
 		double **Bins=(double **)calloc((databuf+i)->fp->header->n_targets,sizeof(double *));
 		int *Windows=(int *)calloc((databuf+i)->fp->header->n_targets,sizeof(int));
@@ -329,25 +314,20 @@ int main(int argc, char *argv[])
 			(databuf+i)->End=hashtbl_create(HASH_SIZE, NULL);
 			bam_fetch_chr(idx,(databuf+i)->fp->header->target_name[j],databuf+i);
 			Bins[j]=(double *)calloc(Windows[j],sizeof(double));
-			hash2BedGraph(databuf+i,j,Bins[j],Windows[j],bedGraph);
+			hash2BedGraph(databuf+i,j,Bins[j],Windows[j]);
 			hashtbl_destroy((databuf+i)->Start,hash_data_delete);
 			hashtbl_destroy((databuf+i)->End,hash_data_delete);
-			output_bins(databuf+i,j,Bins[j],Windows[j],depth);
-			if (globalArgs.wig) output_bins_wig(databuf+i,j,Bins[j],Windows[j],WIG);
+			output_bins_wig(databuf+i,j,Bins[j],Windows[j],wig);
 			free(Bins[j]);
-			if (globalArgs.wig) fprintf(chrSize,"%s\t%d\n",(databuf+i)->fp->header->target_name[j],(databuf+i)->fp->header->target_len[j]);
+			fprintf(chrSize,"%s\t%d\n",(databuf+i)->fp->header->target_name[j],(databuf+i)->fp->header->target_len[j]);
 			fprintf(stderr,"%s at %.3f s\n",(databuf+i)->fp->header->target_name[j],(double)(usec()-begin)/CLOCKS_PER_SEC);
 		}
 		free(Windows);
 		free(Bins);
 		bam_index_destroy(idx);
 		samclose((databuf+i)->fp);
-		fclose(bedGraph);
-		fclose(depth);
-		if (globalArgs.wig){
-			fclose(WIG);
-			fclose(chrSize);
-		}
+		fclose(wig);
+		fclose(chrSize);
 		fprintf(stderr,"Converted %s to wig format at %.3f s\n",*(globalArgs.infiles+i),(double)(usec()-begin)/CLOCKS_PER_SEC);
 	}
 	free(suffix);
