@@ -2,15 +2,15 @@ CC=		gcc
 CFLAGS=		-O3 -Wall -W -Wstrict-prototypes -Wwrite-strings -g -ggdb
 LDFLAGS=	-lz 
 DFLAGS=		
-INCLUDES=	-I$(CURDIR)/zlib-1.2.8/include
-LIBPATH=	-L$(CURDIR)/zlib-1.2.8/lib
+INCLUDES=	-I. -I$(CURDIR)/zlib-1.2.8/include
+LIBPATH=	-L. -L$(CURDIR)/zlib-1.2.8/lib
 LIBNAME=	liblist
 STLIBSUFFIX=a
 STLIBNAME=$(LIBNAME).$(STLIBSUFFIX)
 STLIB_MAKE_CMD=ar rcs $(STLIBNAME)
 
 .PHONY: all clean
-all:hiredisDir gzfastq_sort gzfastq_sort_list pick_pair fastq_count fastq_count_kthread fastq_trim gzfastq_uniq gzfastq_sample bam2depth bam2wig bam_sliding_count $(STLIBNAME) libhashtbl.a
+all:hiredisDir gzfastq_sort gzfastq_sort_list pick_pair fastq_count gzfastq_uniq_sort fastq_count_kthread fastq_trim gzfastq_uniq gzfastq_sample bam2depth bam2wig bam_sliding_count $(STLIBNAME) libhashtbl.a
 SUBDIRS = `find -maxdepth 1 -type d | sed "1d"|grep -P "hiredis|samtools-0.1.19"`
 $(CURDIR)/zlib-1.2.8:zlib-1.2.8.tar.gz
 	tar -zxvf zlib-1.2.8.tar.gz && mv zlib-1.2.8 zlib;\
@@ -66,6 +66,10 @@ fastq_trim.o:fastq_trim.c
 	$(CC) -c $(CFLAGS) $(DFLAGS) $(INCLUDES) $< -o $@
 fastq_trim:fastq_trim.o
 	$(CC) $(CFLAGS) ${DFLAGS} $< -o $@ $(LIBPATH) $(LDFLAGS)
+gzfastq_uniq_sort.o: gzfastq_uniq_sort.c
+	$(CC) -c $(CFLAGS) $(DFLAGS) $(INCLUDES) $< -o $@
+gzfastq_uniq_sort : gzfastq_uniq_sort.o libhashtbl.a
+	$(CC) $(CFLAGS) ${DFLAGS} $< -o $@ $(LIBPATH) $(LDFLAGS) -lhashtbl
 gzfastq_uniq.o:gzfastq_uniq.c
 	$(CC) -c $(CFLAGS) $(DFLAGS) $(INCLUDES) -I./hiredis $< -o $@
 gzfastq_uniq:gzfastq_uniq.o
@@ -77,7 +81,7 @@ gzfastq_sample:gzfastq_sample.o
 	$(CC) $(CFLAGS) ${DFLAGS} $< -o $@ $(LIBPATH) -L./fastq-tools-0.7/src $(LDFLAGS) -lrng
 
 gzfastq_sort_list.o:gzfastq_sort_list.c
-	$(CC) -c $(CFLAGS) $(DFLAGS) $(INCLUDES) -I. $< -o $@
+	$(CC) -c $(CFLAGS) $(DFLAGS) $(INCLUDES) $< -o $@
 gzfastq_sort_list:gzfastq_sort_list.o list.o
 	$(CC) $(CFLAGS) ${DFLAGS} $^ -o $@ $(LIBPATH) $(LDFLAGS)
 
@@ -87,14 +91,14 @@ bam_sliding_count:bam_sliding_count.o $(CURDIR)/samtools-0.1.19/libbam.a
 	$(CC) $(CFLAGS) ${DFLAGS} $< -o $@ $(LIBPATH) -L./samtools-0.1.19 -lbam -lpthread -lgd -lpng -lfreetype -lm $(LDFLAGS)
 
 bam2depth.o:bam2depth.c $(CURDIR)/samtools-0.1.19/sam.h
-	$(CC) -c $(CFLAGS) $(DFLAGS) $(INCLUDES) -I./samtools-0.1.19 -I. $< -o $@
+	$(CC) -c $(CFLAGS) $(DFLAGS) $(INCLUDES) -I./samtools-0.1.19 $< -o $@
 bam2depth:bam2depth.o hashtbl.o $(CURDIR)/samtools-0.1.19/libbam.a
-	$(CC) $(CFLAGS) $(DFLAGS) $^ -o $@ $(LIBPATH) -L./samtools-0.1.19 -L. -lbam -lpthread -lm  $(LDFLAGS) 
+	$(CC) $(CFLAGS) $(DFLAGS) $^ -o $@ $(LIBPATH) -L./samtools-0.1.19 -lbam -lpthread -lm  $(LDFLAGS) 
 
 bam2wig.o:bam2wig.c $(CURDIR)/samtools-0.1.19/sam.h
 	$(CC) -c $(CFLAGS) $(DFLAGS) $(INCLUDES) -I./samtools-0.1.19 -I. $< -o $@
 bam2wig:bam2wig.o hashtbl.o $(CURDIR)/samtools-0.1.19/libbam.a
-	$(CC) $(CFLAGS) $(DFLAGS) $^ -o $@ $(LIBPATH) -L./samtools-0.1.19 -L. -lbam -lpthread -lm  $(LDFLAGS)
+	$(CC) $(CFLAGS) $(DFLAGS) $^ -o $@ $(LIBPATH) -L./samtools-0.1.19 -lbam -lpthread -lm  $(LDFLAGS)
 
 $(STLIBNAME):list.o
 	$(STLIB_MAKE_CMD) $<
@@ -103,7 +107,7 @@ libhashtbl.a:hashtbl.o
 	 $(AR) -csru $@ $<
 
 clean:
-	rm -rf hiredisDir gzfastq_sort gzfastq_sort_list pick_pair fastq_count fastq_count_kthread fastq_trim gzfastq_uniq gzfastq_sample bam_sliding_count bam2depth bam2wig $(STLIBNAME) libhashtbl.a samtools-0.1.19 zlib-1.2.8 *.o; \
+	rm -rf hiredisDir gzfastq_sort gzfastq_sort_list pick_pair fastq_count fastq_count_kthread fastq_trim gzfastq_uniq gzfastq_sample bam_sliding_count bam2depth bam2wig gzfastq_uniq_sort $(STLIBNAME) libhashtbl.a samtools-0.1.19 zlib-1.2.8 *.o; \
 	wdir=`pwd`; \
 	cd ./hiredis;\
 	$(MAKE) clean;\
