@@ -49,8 +49,8 @@ struct globalArgs_t {
 
 static inline Fastq *readNextNode(gzFile fq,char *buf);
 gzFile creat_gzinfile(const char *infile);
-gzFile creat_gzoutfile(const char *outfile,char *suffix);
-HASHTBL *load_fastq_file(char *fq_file1,char *fq_file2,unsigned long *total_reads_count,long long begin,short *strLen);
+gzFile creat_gzoutfile(const char *outfile,const char *suffix);
+HASHTBL *load_fastq_file(const char *fq_file1,const char *fq_file2,unsigned long *total_reads_count,long long begin,short *strLen);
 unsigned long count_read(gzFile fq,char *buf);
 void display_usage(char * argv[]);
 static inline int compare_hashed_data_count(const void *a, const void *b);
@@ -96,7 +96,7 @@ gzFile creat_gzinfile(const char *infile) {
 	return fiz;
 }
 
-gzFile creat_gzoutfile(const char *outfile,char *suffix) {
+gzFile creat_gzoutfile(const char *outfile,const char *suffix) {
 	char *out=(char *)calloc(strlen(outfile)+128,sizeof(char));
 	sprintf(out,"%s%s",outfile,suffix);
 	gzFile fo = gzopen(out,"wb");
@@ -107,7 +107,7 @@ gzFile creat_gzoutfile(const char *outfile,char *suffix) {
 	return fo;
 }
 
-HASHTBL *load_fastq_file(char *fq_file1,char *fq_file2,unsigned long *total_reads_count,long long begin,short *strLen)
+HASHTBL *load_fastq_file(const char *fq_file1,const char *fq_file2,unsigned long *total_reads_count,long long begin,short *strLen)
 {
 	char *buf = (char *)malloc(1024 * sizeof(char));
 	gzFile fastq1=creat_gzinfile(fq_file1);

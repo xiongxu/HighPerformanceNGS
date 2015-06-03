@@ -21,6 +21,7 @@ typedef struct hashtbl {
     HSIZE (*hashfunc)(const char *);
 } HASHTBL;
 
+
 HASHTBL *hashtbl_create(HSIZE size, HSIZE (*hashfunc)(const char *));
 void hashtbl_destroy(HASHTBL *hashtbl,void (*DELETE)(void *));
 int hashtbl_insert(HASHTBL *hashtbl, const char *key, void *data);
@@ -29,12 +30,13 @@ void *hashtbl_get(HASHTBL *hashtbl, const char *key);
 int hashtbl_resize(HASHTBL *hashtbl, HSIZE size);
 void hashtbl_dump(HASHTBL *hashtbl, FILE *stream);
 ENTRY** dump_hash_table(HASHTBL *hashtbl);
-int cmp_char2int(const void *a, const void *b);
-int compare_hashed_data_key(const void *a, const void *b) ;
+char **union_hashed_keys(HASHTBL *hashtbl_a,HASHTBL *hashtbl_b);
 int char2int(UBYTE *string,int *pos);
 UBYTE *int2char(int pos,UBYTE *value);
+int cmp_char2int(const void *a, const void *b);
 int cmp_twoBitInt(const void *a, const void *b);
-char **union_hashed_keys(HASHTBL *hashtbl_a,HASHTBL *hashtbl_b);
+int compare_hashed_data_key(const void *a, const void *b);
+
 
 #define DEF_SIZE 100000
 #define HASHTBL_INIT(hashtbl) (hashtbl = hashtbl_create(DEF_SIZE, NULL))

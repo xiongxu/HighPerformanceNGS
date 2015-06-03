@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include "hashtbl.h"
 
+
 /*
 static HSIZE bkdr_hash(const char *key)
 {
@@ -257,17 +258,18 @@ int char2int(UBYTE *string,int *pos){
 	return *pos;
 }
 
+
 int cmp_char2int(const void *a, const void *b){
-	return atoi(*(char * const*)a)-atoi(*(char * const*)b);
+    return atoi(*(char * const*)a)-atoi(*(char * const*)b);
 }
 
 int cmp_twoBitInt(const void *a, const void *b){
-	int c=0,d=0;
-	return char2int(*(UBYTE * const*)a,&c)-char2int(*(UBYTE * const*)b,&d);
+    int c=0,d=0;
+    return char2int(*(UBYTE * const*)a,&c)-char2int(*(UBYTE * const*)b,&d);
 }
 
 int compare_hashed_data_key(const void *a, const void *b) {
-	return strcmp((*(ENTRY* const *)a)->key,(*(ENTRY* const *)b)->key);
+    return strcmp((*(ENTRY* const *)a)->key,(*(ENTRY* const *)b)->key);
 }
 
 char **union_hashed_keys(HASHTBL *hashtbl_a,HASHTBL *hashtbl_b){

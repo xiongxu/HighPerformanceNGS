@@ -10,7 +10,7 @@ STLIBNAME=$(LIBNAME).$(STLIBSUFFIX)
 STLIB_MAKE_CMD=ar rcs $(STLIBNAME)
 
 .PHONY: all clean
-all:hiredisDir gzfastq_sort gzfastq_sort_list pick_pair fastq_count gzfastq_uniq_sort fastq_count_kthread fastq_trim gzfastq_uniq gzfastq_sample bam2depth bam2wig bam_sliding_count $(STLIBNAME) libhashtbl.a
+all:hiredisDir gzfastq_sort gzfastq_sort_list pick_pair fastq_count gzfastq_uniq_sort fastq_count_kthread fastq_trim gzfastq_uniq gzfastq_sample bam2depth bam2wig bam_sliding_count $(STLIBNAME) Rgzfastq_uniq.so
 SUBDIRS = `find -maxdepth 1 -type d | sed "1d"|grep -P "hiredis|samtools-0.1.19"`
 $(CURDIR)/zlib-1.2.8:zlib-1.2.8.tar.gz
 	tar -zxvf zlib-1.2.8.tar.gz && mv zlib-1.2.8 zlib;\
@@ -25,14 +25,14 @@ hiredisDir:
 	wdir=`pwd`; \
 	for subdir in $(SUBDIRS); do \
 		cd  $$subdir;\
-		$(MAKE)  ;\
+		$(MAKE) INCLUDES="$(INCLUDES)" LIBPATH="$(LIBPATH)" ;\
 		cd $$wdir;\
 	done
 
 $(CURDIR)/samtools-0.1.19/libbam.a $(CURDIR)/samtools-0.1.19/sam.h: samtools-0.1.19.tar.bz2 $(CURDIR)/zlib-1.2.8
 	tar -jxvf samtools-0.1.19.tar.bz2;\
 	cd $(CURDIR)/samtools-0.1.19;\
-	make INCLUDES=" -I. -I$(CURDIR)/zlib-1.2.8/include" LIBPATH=" -L$(CURDIR)/zlib-1.2.8/lib";\
+	make INCLUDES="$(INCLUDES)" LIBPATH="$(LIBPATH)";\
 	rm *.o misc/*.o bcftools/*.o;\
 	cd $(CURDIR)
 
@@ -41,7 +41,7 @@ $(CURDIR)/samtools-0.1.19/libbam.a $(CURDIR)/samtools-0.1.19/sam.h: samtools-0.1
 list.o:list.c
 	$(CC) -c $(CFLAGS) $(DFLAGS) $< -o $@
 hashtbl.o:hashtbl.c
-	$(CC) -c $(CFLAGS) $(DFLAGS) $< -o $@
+	$(CC) -fPIC -c $(CFLAGS) $(DFLAGS) $< -o $@
 
 pick_pair.o:pick_pair.c
 	$(CC) -c $(CFLAGS) $(DFLAGS) $(INCLUDES) $< -o $@
@@ -106,8 +106,11 @@ $(STLIBNAME):list.o
 libhashtbl.a:hashtbl.o
 	 $(AR) -csru $@ $<
 
+Rgzfastq_uniq.so:Rgzfastq_uniq.c libhashtbl.a
+	gcc -shared -std=gnu99 -fPIC -g -O2 $< -o $@ $(INCLUDES) -I/share/software/software/R-3.0_install/R-3.0.1/include -DNDEBUG  -L/usr/local/lib64 -L/share/software/software/R-3.0_install/R-3.0.1/lib -L. -lR -lhashtbl $(LDFLAGS)
+
 clean:
-	rm -rf hiredisDir gzfastq_sort gzfastq_sort_list pick_pair fastq_count fastq_count_kthread fastq_trim gzfastq_uniq gzfastq_sample bam_sliding_count bam2depth bam2wig gzfastq_uniq_sort $(STLIBNAME) libhashtbl.a samtools-0.1.19 zlib-1.2.8 *.o; \
+	rm -rf hiredisDir gzfastq_sort gzfastq_sort_list pick_pair fastq_count fastq_count_kthread fastq_trim gzfastq_uniq gzfastq_sample bam_sliding_count bam2depth bam2wig gzfastq_uniq_sort $(STLIBNAME) samtools-0.1.19 zlib-1.2.8  libhashtbl.a Rgzfastq_uniq.so *.o; \
 	wdir=`pwd`; \
 	cd ./hiredis;\
 	$(MAKE) clean;\
