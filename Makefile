@@ -107,8 +107,7 @@ libhashtbl.a:hashtbl.o
 	 $(AR) -csru $@ $<
 
 Rgzfastq_uniq.so:Rgzfastq_uniq.c libhashtbl.a
-	gcc -shared -std=gnu99 -fPIC -g -O2 $< -o $@ $(INCLUDES) -I/share/software/software/R-3.0_install/R-3.0.1/include -DNDEBUG  -L/usr/local/lib64 -L/share/software/software/R-3.0_install/R-3.0.1/lib -L. -lR -lhashtbl $(LDFLAGS)
-
+	gcc -shared -std=gnu99 -fPIC -g -O2 $< -o $@ $(INCLUDES) -I/usr/share/R/include -DNDEBUG  -L/usr/local/lib64 -L/usr/lib/R/lib -L. -lR -lhashtbl $(LDFLAGS)
 clean:
 	rm -rf hiredisDir gzfastq_sort gzfastq_sort_list pick_pair fastq_count fastq_count_kthread fastq_trim gzfastq_uniq gzfastq_sample bam_sliding_count bam2depth bam2wig gzfastq_uniq_sort $(STLIBNAME) samtools-0.1.19 zlib-1.2.8  libhashtbl.a Rgzfastq_uniq.so *.o; \
 	wdir=`pwd`; \
