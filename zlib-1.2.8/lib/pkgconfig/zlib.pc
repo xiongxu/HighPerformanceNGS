@@ -1,4 +1,4 @@
-prefix=/share/work1/staff/xuxiong/software/bcl2fastq2/zlib-1.2.8
+prefix=/data/xux_data/HighPerformanceNGS/zlib-1.2.8
 exec_prefix=${prefix}
 libdir=${exec_prefix}/lib
 sharedlibdir=${libdir}

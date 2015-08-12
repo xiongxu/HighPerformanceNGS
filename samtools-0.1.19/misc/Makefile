@@ -5,6 +5,7 @@ CXXFLAGS=	$(CFLAGS)
 DFLAGS=		-D_FILE_OFFSET_BITS=64
 OBJS=		
 PROG=		md5sum-lite md5fa maq2sam-short maq2sam-long ace2sam wgsim bamcheck
+INCLUDES=	-I..
 SUBDIRS=	.
 
 .SUFFIXES:.c .o
@@ -27,19 +28,19 @@ lib-recur all-recur clean-recur cleanlocal-recur install-recur:
 lib:
 
 bamcheck:bamcheck.o
-		$(CC) $(CFLAGS) -o $@ bamcheck.o $(LIBPATH) -L.. -lm -lbam -lpthread -lz
+		$(CC) $(CFLAGS) -o $@ bamcheck.o -L.. $(LIBPATH) -lm -lbam -lpthread -lz
 
 bamcheck.o:bamcheck.c ../faidx.h ../khash.h ../sam.h ../razf.h
-		$(CC) $(CFLAGS) -c $(INCLUDES) -I.. -o $@ bamcheck.c
+		$(CC) $(CFLAGS) -c -I.. $(INCLUDES) -o $@ bamcheck.c
 
 ace2sam:ace2sam.o
-		$(CC) $(CFLAGS) -o $@ ace2sam.o -lz
+		$(CC) $(CFLAGS) -o $@ ace2sam.o $(LIBPATH) -lz
 
 wgsim:wgsim.o
-		$(CC) $(CFLAGS) -o $@ wgsim.o -lm -lz
+		$(CC) $(CFLAGS) -o $@ wgsim.o $(LIBPATH) -lm -lz
 
 md5fa:md5.o md5fa.o md5.h ../kseq.h
-		$(CC) $(CFLAGS) -o $@ md5.o md5fa.o -lz
+		$(CC) $(CFLAGS) -o $@ md5.o md5fa.o $(LIBPATH) -lz
 
 md5sum-lite:md5sum-lite.o
 		$(CC) $(CFLAGS) -o $@ md5sum-lite.o
@@ -48,10 +49,10 @@ md5sum-lite.o:md5.c md5.h
 		$(CC) -c $(CFLAGS) -DMD5SUM_MAIN -o $@ md5.c
 
 maq2sam-short:maq2sam.c
-		$(CC) $(CFLAGS) -o $@ maq2sam.c -lz
+		$(CC) $(CFLAGS) -o $@ maq2sam.c $(INCLUDES) $(LIBPATH) -lz
 
 maq2sam-long:maq2sam.c
-		$(CC) $(CFLAGS) -DMAQ_LONGREADS -o $@ maq2sam.c -lz
+		$(CC) $(CFLAGS) -DMAQ_LONGREADS -o $@ maq2sam.c $(INCLUDES) $(LIBPATH) -lz
 
 md5fa.o:md5.h md5fa.c
 		$(CC) $(CFLAGS) -c -I.. -o $@ md5fa.c

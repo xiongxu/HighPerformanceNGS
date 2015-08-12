@@ -1,4 +1,3 @@
-//gcc -g -O3 -Wall calDepth.c  -o calDepth /home/xuxiong/data/bin/samtools-0.1.19/libbam.a  -I/home/xuxiong/data/bin/samtools-0.1.19 -L/home/xuxiong/data/bin/samtools-0.1.19 -lz -lpthread
 #include <stdio.h>
 #include "sam.h"
 

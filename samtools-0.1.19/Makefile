@@ -1,5 +1,5 @@
 CC=			gcc
-CFLAGS=		-g -Wall -O2 -fPIC
+CFLAGS=		-g -Wall -O2
 #LDFLAGS=		-Wl,-rpath,\$$ORIGIN/../lib
 DFLAGS=		-D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE -D_USE_KNETFILE -D_CURSES_LIB=1
 KNETFILE_O=	knetfile.o
@@ -12,9 +12,9 @@ AOBJS=		bam_tview.o bam_plcmd.o sam_view.o \
 			cut_target.o phase.o bam2depth.o padding.o bedcov.o bamshuf.o \
 			bam_tview_curses.o bam_tview_html.o
 PROG=		samtools
-INCLUDES=	-I. -I$(CURDIR)/../zlib-1.2.8/include
+INCLUDES=	-I.
 SUBDIRS=	. bcftools misc
-LIBPATH=    -L$(CURDIR)/../zlib-1.2.8/lib
+LIBPATH=
 LIBCURSES=	-lcurses # -lXCurses
 
 .SUFFIXES:.c .o
@@ -47,10 +47,10 @@ samtools:lib-recur $(AOBJS)
 		$(CC) $(CFLAGS) -o $@ $(AOBJS) $(LDFLAGS) libbam.a -Lbcftools -lbcf $(LIBPATH) $(LIBCURSES) -lm -lz -lpthread
 
 razip:razip.o razf.o $(KNETFILE_O)
-		$(CC) $(CFLAGS) -o $@ $^ $(LIBPATH)  -lz
+		$(CC) $(CFLAGS) -o $@ $^ -lz
 
 bgzip:bgzip.o bgzf.o $(KNETFILE_O)
-		$(CC) $(CFLAGS) -o $@ $^ $(LIBPATH) -lz -lpthread
+		$(CC) $(CFLAGS) -o $@ $^ -lz -lpthread
 
 bgzf.o:bgzf.c bgzf.h
 		$(CC) -c $(CFLAGS) $(DFLAGS) -DBGZF_CACHE $(INCLUDES) bgzf.c -o $@
