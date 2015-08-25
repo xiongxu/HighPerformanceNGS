@@ -214,7 +214,7 @@ dict *load_fastq_PE(const char *fq_file1,const char *fq_file2,unsigned long *tot
 				free_Fastq(line2);
 			}
 		}
-		sdsclear(pair_seq);
+		sdsfree(pair_seq);
 		(*total_reads_count)++;
 	}
 	gzclose(fastq1);
@@ -254,7 +254,7 @@ dict *load_fastq_SE(const char *fq_file1,unsigned long *total_reads_count,dictTy
 				free_Fastq(line1);
 			}
 		}
-		sdsclear(pair_seq);
+		sdsfree(pair_seq);
 		(*total_reads_count)++;
 	}
 	gzclose(fastq1);
