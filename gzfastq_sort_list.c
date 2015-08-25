@@ -36,6 +36,7 @@ static inline int comp_name(const void *a, const void *b);
 static inline int comp_seq(const void *a, const void *b);
 void load_file(gzFile fp,const char *outfile);
 static inline Fastq *readNextNode(gzFile fq,char *buf);
+static inline Fastq *dump_array(List *chunk,long long begin);
 static long long usec(void);
 
 long long usec(void){
@@ -92,6 +93,20 @@ int comp_seq(const void *a, const void *b) {
 	}
 }
 
+Fastq *dump_array(List *chunk,long long begin){
+	Fastq *arrays=(Fastq *)calloc(chunk->count,sizeof(Fastq));
+	int i=0;
+	Node *n = chunk->head;
+	while (n) {
+		Node *next_n = n->next;
+		arrays[i++]=*(Fastq *)n->data;
+		n = next_n;
+	}
+	fprintf(stderr,"done dump_array at %.3f s\n",(double)(usec()-begin)/CLOCKS_PER_SEC);
+	qsort(arrays,chunk->count,sizeof(Fastq),(globalArgs.by_name && !globalArgs.by_seq) ? comp_name : comp_seq);
+	return arrays;
+}
+
 void load_file(gzFile fp,const char *outfile) {
 	List *chunk=list_create(FastqFree,(globalArgs.by_name && !globalArgs.by_seq) ? comp_name : comp_seq);
 	char *buf = (char *) malloc(1024*sizeof(char));
@@ -105,7 +120,8 @@ void load_file(gzFile fp,const char *outfile) {
 	fprintf(stderr,"done read file at %.3f s\nlist count: %d\n",(double)(usec()-begin)/CLOCKS_PER_SEC,chunk->count);
 	
 	FILE *out=(globalArgs.by_name && !globalArgs.by_seq) ? fcreat_outfile(outfile,"_sort_by_name.fq") : fcreat_outfile(outfile,"_sort_by_seq.fq");
-	list_sort(chunk);
+	//list_sort(chunk);
+	Fastq *arrays=dump_array(chunk,begin);
 	fprintf(stderr,"done sort file at %.3f s\n",(double)(usec()-begin)/CLOCKS_PER_SEC);
 
 //	Node *n = chunk->head;
@@ -119,9 +135,14 @@ void load_file(gzFile fp,const char *outfile) {
 //	}
 //	free(chunk);
 
-	while ( (line=(Fastq *)shift(chunk))!=NULL ){
-		fprintf(out,"%s\n%s\n+\n%s\n",line->name,line->seq,line->quality);
+	// while ( (line=(Fastq *)shift(chunk))!=NULL ){
+	// 	fprintf(out,"%s\n%s\n+\n%s\n",line->name,line->seq,line->quality);
+	// }
+	int i;
+	for (i=0;i<chunk->count ;i++ ) {
+		fprintf(out,"%s\n%s\n+\n%s\n",(arrays+i)->name,(arrays+i)->seq,(arrays+i)->quality);
 	}
+	free(arrays);
 	fprintf(stderr,"done write file at %.3f s\n",(double)(usec()-begin)/CLOCKS_PER_SEC);
 	list_free(chunk);
 
