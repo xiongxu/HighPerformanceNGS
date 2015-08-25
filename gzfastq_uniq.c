@@ -192,7 +192,7 @@ dict *load_fastq_PE(const char *fq_file1,const char *fq_file2,unsigned long *tot
 			fprintf(stderr,"error at %ld: %s\nunmatched read name\n",*total_reads_count,line1->Name_quality.name);
 			break;
 		}
-		pair_seq=sdscatlen(pair_seq,line1->seq,line1->Name_quality.seq_len);
+		pair_seq=sdsnewlen(line1->seq,line1->Name_quality.seq_len);
 		pair_seq=sdscatlen(pair_seq,line2->seq,line2->Name_quality.seq_len);
 		sumQ=0;
 		SUMQuality(sumQ,line1->Name_quality.quality,line1->Name_quality.seq_len);
@@ -219,7 +219,6 @@ dict *load_fastq_PE(const char *fq_file1,const char *fq_file2,unsigned long *tot
 	}
 	gzclose(fastq1);
 	gzclose(fastq2);
-	sdsfree(pair_seq);
 	fprintf(stderr,"unique reads number = %lu(%lu / %lu = %.3f%%)\n",ht->used,ht->used,*total_reads_count,100.0*ht->used/(*total_reads_count));
 	fprintf(stderr,"hash size: %ld\n",ht->size);
 	fprintf(stderr,"Finished load hash at %.3f s\n",(double)(usec()-begin)/CLOCKS_PER_SEC);
@@ -258,7 +257,6 @@ dict *load_fastq_SE(const char *fq_file1,unsigned long *total_reads_count,dictTy
 		(*total_reads_count)++;
 	}
 	gzclose(fastq1);
-	sdsfree(pair_seq);
 	fprintf(stderr,"unique reads number = %lu(%lu / %lu = %.3f%%)\n",ht->used,ht->used,*total_reads_count,100.0*ht->used/(*total_reads_count));
 	fprintf(stderr,"hash size: %ld\n",ht->size);
 	fprintf(stderr,"Finished load hash at %.3f s\n",(double)(usec()-begin)/CLOCKS_PER_SEC);
