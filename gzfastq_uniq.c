@@ -297,15 +297,17 @@ void output_hashPE(dict *hashtbl,const char *outfile){
 		int string_index=split(splitSeq,temp_data->uniq_fastq[0].name,' ');
 		sds key1=sdsnewlen((sds)entry->key,temp_data->uniq_fastq[0].seq_len);
 //		gzprintf(out1,"%s XI:Z:%s\tXF:i:%u\n%s\n+\n%s\n",splitSeq[0],splitSeq[1],temp_data->count,key1,temp_data->uniq_fastq[0].quality);
-		fprintf(out1,"%s XI:Z:%s\tXF:i:%u\n%s\n+\n%s\n",splitSeq[0],splitSeq[1],temp_data->count,key1,temp_data->uniq_fastq[0].quality);
+//		fprintf(out1,"%s XI:Z:%s\tXF:i:%u\n%s\n+\n%s\n",splitSeq[0],splitSeq[1],temp_data->count,key1,temp_data->uniq_fastq[0].quality);
+		fprintf(out1,"%s\t%u\n%s\n+\n%s\n",temp_data->uniq_fastq[0].name,temp_data->count,key1,temp_data->uniq_fastq[0].quality);
 		sdsfree(key1);
 		freeSplitString(splitSeq,string_index);
 
 		splitSeq=(char **)malloc(2*sizeof(char *));
-		string_index=split(splitSeq,temp_data->uniq_fastq[0].name,' ');
+		string_index=split(splitSeq,temp_data->uniq_fastq[1].name,' ');
 		sds key2=sdsnewlen((sds)entry->key+temp_data->uniq_fastq[0].seq_len,temp_data->uniq_fastq[1].seq_len);
 //		gzprintf(out2,"%s XI:Z:%s\tXF:i:%u\n%s\n+\n%s\n",splitSeq[0],splitSeq[1],temp_data->count,key2,temp_data->uniq_fastq[1].quality);
-		fprintf(out2,"%s XI:Z:%s\tXF:i:%u\n%s\n+\n%s\n",splitSeq[0],splitSeq[1],temp_data->count,key2,temp_data->uniq_fastq[1].quality);
+//		fprintf(out2,"%s XI:Z:%s\tXF:i:%u\n%s\n+\n%s\n",splitSeq[0],splitSeq[1],temp_data->count,key2,temp_data->uniq_fastq[1].quality);
+		fprintf(out2,"%s\t%u\n%s\n+\n%s\n",temp_data->uniq_fastq[1].name,temp_data->count,key2,temp_data->uniq_fastq[1].quality);
 		sdsfree(key2);
 		freeSplitString(splitSeq,string_index);
 	}
@@ -326,7 +328,8 @@ void output_hashSE(dict *hashtbl,const char *outfile){
 		char **splitSeq=(char **)malloc(2*sizeof(char *));
 		int string_index=split(splitSeq,temp_data->uniq_fastq->name,' ');
 //		gzprintf(out1,"%s XI:Z:%s\tXF:i:%u\n%s\n+\n%s\n",splitSeq[0],splitSeq[1],temp_data->count,(char *)entry->key,temp_data->uniq_fastq->quality);
-		fprintf(out1,"%s XI:Z:%s\tXF:i:%u\n%s\n+\n%s\n",splitSeq[0],splitSeq[1],temp_data->count,(char *)entry->key,temp_data->uniq_fastq->quality);
+//		fprintf(out1,"%s XI:Z:%s\tXF:i:%u\n%s\n+\n%s\n",splitSeq[0],splitSeq[1],temp_data->count,(char *)entry->key,temp_data->uniq_fastq->quality);
+		fprintf(out1,"%s\t%u\n%s\n+\n%s\n",temp_data->uniq_fastq->name,temp_data->count,(char *)entry->key,temp_data->uniq_fastq->quality);
 		freeSplitString(splitSeq,string_index);
 	}
 	dictReleaseIterator(iter);
