@@ -72,6 +72,21 @@ do{												\
 	data->sumQuality=SumQuality;				\
 }while (0)
 
+#define printSortedDict(ht,suffix,Outfile)   \   
+do{                                                                 \
+    if (ht){                                                        \
+        dictEntry** D=dump_dict(ht);                                \
+        FILE *stream=fcreat_outfile(Outfile,suffix);                \
+        unsigned long i=0;                                          \
+        for (i=0;i<ht->used;i++){                                   \
+            Data_t *value=(Data_t *)(D[i]->val);					\
+			fprintf(stream,"%s\t%u\n%s\n+\n%s\n",value->uniq_fastq->name,value->count,(char *)D[i]->key,value->uniq_fastq->quality);	\
+        }                                                           \
+        free(D);                                                    \
+        fclose(stream);                                             \
+    }                                                               \
+}while(0)
+
 typedef struct _Name_Quality_
 {
 	char *name;
@@ -113,6 +128,8 @@ static inline void mykeyDestructor(void *privdata, void *key);
 static inline void myvalDestructorSE(void *privdata, void *obj);
 static inline void myvalDestructorPE(void *privdata, void *obj);
 static inline unsigned int myhashFunction(const void *key);
+static inline int compare_hashed_key(const void *a, const void *b);
+static inline int compare_hashed_data_count(const void *a, const void *b);
 
 unsigned int myhashFunction(const void *key){
 	return dictGenHashFunction((unsigned char *)key,sdslen((sds) key));
@@ -263,6 +280,27 @@ dict *load_fastq_SE(const char *fq_file1,unsigned long *total_reads_count,dictTy
 	return ht;
 }
 
+int compare_hashed_data_count(const void *a, const void *b) {
+    return ((Data_t *)(*(dictEntry* const *)b)->val)->count-((Data_t *)(*(dictEntry* const *)a)->val)->count;
+}
+
+int compare_hashed_key(const void *a, const void *b) {
+	return sdscmp((sds)(*(dictEntry* const *)a)->key,(sds)(*(dictEntry* const *)b)->key);
+}
+
+dictEntry** dump_dict(dict *ht){
+    dictEntry** D = (dictEntry **)malloc(ht->used * sizeof(dictEntry *));
+    dictIterator *iter=dictGetIterator(ht);
+    dictEntry *entry=dictNext(iter);
+    uint32_t j=0;
+    for (; entry; entry=dictNext(iter)) {
+        D[j++]=entry;
+    }
+    dictReleaseIterator(iter);
+    qsort(D, ht->used, sizeof(dictEntry *), compare_hashed_key);
+    return D;
+}
+
 void display_usage(char * argv[]){
 	char *buffer=(char* )malloc(10240*sizeof(char));
 	const char* usage=
@@ -384,6 +422,7 @@ int main(int argc, char *argv[]){
 		initdictTypeSE(mydictType);
 		hash = load_fastq_SE(globalArgs.read1,&total_reads_num,mydictType,begin);
 		output_hashSE(hash,globalArgs.outfile);
+		printSortedDict(hash,"_sortKeyUniq.fq",globalArgs.outfile);
 	}
 	dictRelease(hash);
 	free(mydictType);
