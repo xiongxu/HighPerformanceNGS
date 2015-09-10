@@ -10,7 +10,7 @@ STLIBNAME=$(LIBNAME).$(STLIBSUFFIX)
 STLIB_MAKE_CMD=ar rcs $(STLIBNAME)
 
 .PHONY: all clean
-all:  hiredisDir gzfastq_sort gzfastq_sort_list pick_pair fastq_count fastq2twobit twoBit2seq gzfastq_uniq_sort fastq_count_kthread fastq_trim gzfastq_uniq gzfastq_sample bam2depth bam2wig bam_sliding_count $(STLIBNAME) Rgzfastq_uniq.so
+all:  hiredisDir gzfastq_sort gzfastq_sort_list gzfastq_uniqQ pick_pair fastq_count fastq2twobit twoBit2seq gzfastq_uniq_sort fastq_count_kthread fastq_trim gzfastq_uniq gzfastq_sample bam2depth bam2wig bam_sliding_count $(STLIBNAME) Rgzfastq_uniq.so
 SUBDIRS = `find $(CURDIR) -maxdepth 1 -type d | sed "1d"|grep -E "hiredis|samtools-0.1.19"`
 $(CURDIR)/zlib-1.2.8:zlib-1.2.8.tar.gz
 	tar -zxvf zlib-1.2.8.tar.gz && mv zlib-1.2.8 zlib;\
@@ -67,6 +67,12 @@ gzfastq_uniq.o:gzfastq_uniq.c
 	$(CC) -c $(CFLAGS) $(DFLAGS) $(INCLUDES) -I./hiredis $< -o $@
 gzfastq_uniq:gzfastq_uniq.o
 	$(CC) $(CFLAGS) ${DFLAGS} $< -o $@ $(LIBPATH) -L./hiredis $(LDFLAGS) -lhiredis
+
+gzfastq_uniqQ.o:gzfastq_uniqQ.c $(CURDIR)/zlib-1.2.8
+	$(CC) -c $(CFLAGS) $(DFLAGS) $(INCLUDES) -I./hiredis $< -o $@
+gzfastq_uniqQ:gzfastq_uniqQ.o list.o
+	$(CC) $(CFLAGS) ${DFLAGS} $^ -o $@ $(LIBPATH) -L./hiredis $(LDFLAGS) -lhiredis
+
 fastq2twobit.o:fastq2twobit.c
 	$(CC) -c $(CFLAGS) $(DFLAGS) $(INCLUDES) -I./hiredis $< -o $@
 fastq2twobit:fastq2twobit.o list.o
@@ -125,7 +131,7 @@ libhashtbl.a:hashtbl.o
 Rgzfastq_uniq.so:Rgzfastq_uniq.c libhashtbl.a
 	gcc -shared -std=gnu99 -fPIC -g -O2 $< -o $@ $(INCLUDES) -I/usr/share/R/include -DNDEBUG  -L/usr/local/lib64 -L/usr/lib/R/lib -L. -lR -lhashtbl $(LDFLAGS)
 clean:
-	rm -rf fastq-tools-0.7 hiredisDir gzfastq_sort gzfastq_sort_list pick_pair fastq_count fastq_count_kthread fastq_trim fastq2twobit twoBit2seq gzfastq_uniq gzfastq_sample bam_sliding_count bam2depth bam2wig gzfastq_uniq_sort $(STLIBNAME) samtools-0.1.19 zlib-1.2.8  libhashtbl.a Rgzfastq_uniq.so *.o fastq-tools-0.7/src/librng.a ; \
+	rm -rf fastq-tools-0.7 hiredisDir gzfastq_sort gzfastq_sort_list pick_pair gzfastq_uniqQ fastq_count fastq_count_kthread fastq_trim fastq2twobit twoBit2seq gzfastq_uniq gzfastq_sample bam_sliding_count bam2depth bam2wig gzfastq_uniq_sort $(STLIBNAME) samtools-0.1.19 zlib-1.2.8  libhashtbl.a Rgzfastq_uniq.so *.o fastq-tools-0.7/src/librng.a ; \
 	wdir=`pwd`; \
 	cd ./hiredis;\
 	$(MAKE) clean;\
