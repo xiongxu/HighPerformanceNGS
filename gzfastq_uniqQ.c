@@ -256,7 +256,7 @@ dictEntry** dump_dict(dict *ht){
         D[j++]=entry;
     }
     dictReleaseIterator(iter);
-    qsort(D, ht->used, sizeof(dictEntry *),(globalArgs.sortbyseq & !globalArgs.sortbyCount ? compare_hashed_key : compare_hashed_data_count));
+    qsort(D, ht->used, sizeof(dictEntry *),(globalArgs.sortbyseq && !globalArgs.sortbyCount ? compare_hashed_key : compare_hashed_data_count));
     return D;
 }
 
