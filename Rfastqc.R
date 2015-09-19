@@ -117,7 +117,7 @@ plot_Data_range<-function(outfile,Data){
 	cat("Done plot Data_range\n",file=stderr())
 }
 
-plot_GC_density<-function(outfile,Data,maxLen){
+plot_GC_density0<-function(outfile,Data,maxLen){
 	colors <- c('#4682B4','#A0522D','#FF8C00','#87CEEB','#6B8E23','#6A5ACD','#778899','#DAA520','#B22222','#FF6699')
 	png(paste(outfile,"_GC_density",".png",sep=''),pointsize=18,width=900,height=600)
 #	cat("Min: ",min(Data),"\tMax: ",max(Data),sprintf("\tMean GC%%: %.2f%%",mean(Data)*100),"\n",file=stderr())
@@ -142,6 +142,49 @@ plot_GC_density<-function(outfile,Data,maxLen){
 	legend("topright",
 		legend=c(sprintf("Mean GC%%: %.2f%%",mean(Data)*100),sprintf("Max density GC%%: %.2f%%",D_Data$x[D_Data$y==max(D_Data$y)])),
 		cex=0.8,
+		inset = 0.01
+	)
+	box()
+	pic=dev.off()
+	cat("Done plot_GC_density\n",file=stderr())
+}
+
+plot_GC_density<-function(outfile,Data,maxLen){
+	colors <- c('#4682B4','#A0522D','#FF8C00','#87CEEB','#6B8E23','#6A5ACD','#778899','#DAA520','#B22222','#FF6699')
+	png(paste(outfile,"_GC_density",".png",sep=''),pointsize=18,width=900,height=600)
+#	cat("Min: ",min(Data),"\tMax: ",max(Data),sprintf("\tMean GC%%: %.2f%%",mean(Data)*100),"\n",file=stderr())
+	Dens<-density(Data*100,n=maxLen)
+	x<-Dens$x
+	y<-Dens$y
+	tab<-data.frame(x=x,y=y)
+	nlmod <- nls(y ~ k/(sqrt(2*pi)*sigma)*exp(-1/2*(x-mu)^2/sigma^2), start=c(mu=50,sigma=100,k=0.1) , data = tab)
+	v <- summary(nlmod)$parameters[,"Estimate"]
+	plot(tab,
+		type="o",
+		xlab="GC(%)",
+		ylab="Count",
+		col=colors[1],
+		axes=TRUE,
+	#	xaxs='r',
+	#	xaxt='n',
+		xpd=FALSE,
+#		ylim=c(0,max(Data)*1.2),
+		pch=1,
+		font.lab=1.2,font.main=2,font.axis=1,lwd=2,cex.lab=1.5,cex.main=1.5,cex.axis=1,cex.sub=1,cex=0.5,
+		main=list("GC density distribution")
+	)
+	plot(function(x) v[3]/(sqrt(2*pi)*v[2])*exp(-1/2*(x-v[1])^2/v[2]^2),type='o',pch=15,
+		font.lab=1.2,font.main=2,font.axis=1,lwd=2,cex.lab=1.5,cex.main=1.5,cex.axis=1,cex.sub=1,cex=0.5,
+		col=colors[2],add=T,xlim=range(tab$x) 
+	)
+	#segments(D_Data$x[D_Data$y==max(D_Data$y)],max(D_Data$y),D_Data$x[D_Data$y==max(D_Data$y)],0,col="black",lwd=1,lty=2)
+	legend("topright",
+		legend=c("GC count per read","Theoretical Distribution"),
+		cex=0.8,
+		#fill=TRUE,
+		col=colors,
+		lty=c(1,1),
+		pch=c(1,12),
 		inset = 0.01
 	)
 	box()
@@ -310,7 +353,7 @@ draw_nucleotide_distribution<-function(outfile_prefix,Data){
 	cat("Done nucleotide distribution\n",file=stderr())
 }
 
-dyn.load(paste(dirname(program),"Rgzfastq_uniq.so",sep="/"))
+dyn.load(paste(dirname(program),"Rgzfastq_uniq_3.so",sep="/"))
 List<-.Call("qsort_hash_count",fastq1,fastq2)
 barplot_Data_range(outfile,List[[1]])
 plot_Data_range(outfile,List[[1]])
