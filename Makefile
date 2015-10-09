@@ -129,7 +129,7 @@ libhashtbl.a:hashtbl.o
 	 $(AR) -csru $@ $<
 
 Rgzfastq_uniq.so:Rgzfastq_uniq.c libhashtbl.a
-	gcc -shared -std=gnu99 -fPIC -g -O2 $< -o $@ $(INCLUDES) -I/usr/share/R/include -DNDEBUG  -L/usr/local/lib64 -L/usr/lib/R/lib -L. -lR -lhashtbl $(LDFLAGS)
+	gcc -shared -std=gnu99 -fPIC -g -O2 $< -o $@ $(INCLUDES) -I`Rscript -e "cat(Sys.getenv('R_INCLUDE_DIR'));"` -DNDEBUG  -L/usr/local/lib -L`Rscript -e "cat(Sys.getenv('R_HOME'));"`/lib -L. -lR -lhashtbl $(LDFLAGS)
 clean:
 	rm -rf fastq-tools-0.7 hiredisDir gzfastq_sort gzfastq_sort_list pick_pair gzfastq_uniqQ fastq_count fastq_count_kthread fastq_trim fastq2twobit twoBit2seq gzfastq_uniq gzfastq_sample bam_sliding_count bam2depth bam2wig gzfastq_uniq_sort $(STLIBNAME) samtools-0.1.19 zlib-1.2.8  libhashtbl.a Rgzfastq_uniq.so *.o fastq-tools-0.7/src/librng.a ; \
 	wdir=`pwd`; \
