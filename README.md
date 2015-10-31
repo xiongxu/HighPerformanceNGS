@@ -6,7 +6,7 @@ This package provides a number of small and efficient programs to perform common
 3. gzfastq_uniq: get the unique sequence and outputing to a file(s);
 4. gzfastq_sort: sorting fastq files by dictionary order of read's name or sequence;
 5. bam2depth: using hash to convert bam to bedGraph format,it's extremly fast with large memory consumption;
-6. bam2wig: using hash to convert bam to wig format,you can also convert the wig file to bigWig format by using wig2bigWig of ucsc,it's extremly fast with large memory consumption;
+6. bam2wig: using hash to convert bam to wig format,you can also convert the wig file to bigWig format by using wig2bigWig of ucsc,it's extremly fast with large memory consumption;
 7. bam_sliding_count: use a sliding window algorithm to count the read number & GC content in each window;
 8. fastq_trim:cut reads to get the specified cycles;
 9. pick_pair: for pair end fastq files sorted by read name, this program can pick out the reads that the read names are matched in each end.
