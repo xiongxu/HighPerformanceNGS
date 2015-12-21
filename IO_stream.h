@@ -5,7 +5,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <zlib.h>
-#include <err.h>
+//#include <err.h>
 #include <fcntl.h>
 #include <unistd.h>
 /*
@@ -55,8 +55,8 @@ FILE *fopen_input_stream(const char *filename){
 	if (strncmp(filename,"-", 1)==0 || !strcmp(filename,"")) {
 		fd = STDIN_FILENO;
 	} else {
-		fd = open(filename, O_CREAT | O_RDONLY , 0666 );
-		if (fd==-1) err(1, "Failed to create input file (%s)", filename);
+		fd = open(filename, O_CREAT | O_BINARY | O_RDONLY , 0666 );
+		if (fd==-1) fprintf(stderr, "Failed to create input file (%s)", filename);
 	}
 	FILE *in = fdopen(fd,"rb");
 	return in;
@@ -67,8 +67,8 @@ FILE *fopen_output_stream(const char *filename) {
 	if (strncmp(filename,"-", 1)==0 || !strcmp(filename,"")) {
 		fd = STDOUT_FILENO;
 	} else {
-		fd = open(filename, O_CREAT | O_WRONLY | O_TRUNC, 0666 );
-		if (fd==-1) err(1, "Failed to create output file (%s)", filename);
+		fd = open(filename, O_CREAT | O_BINARY | O_WRONLY | O_TRUNC, 0666 );
+		if (fd==-1) fprintf(stderr, "Failed to create output file (%s)", filename);
 	}
 	FILE *out = fdopen(fd,"wb");
 	return out;
@@ -93,8 +93,8 @@ gzFile open_output_stream(char* filename) {
 	if (strncmp(filename,"-", 1)==0 || !strcmp(filename,"")) {
 		fd = STDOUT_FILENO;
 	} else {
-		fd = open(filename, O_CREAT | O_WRONLY | O_TRUNC, 0666 );
-		if (fd==-1) err(1, "Failed to create output file (%s)", filename);
+		fd = open(filename, O_CREAT |O_BINARY| O_WRONLY | O_TRUNC, 0666 );
+		if (fd==-1) fprintf(stderr, "Failed to create output file (%s)", filename);
 	}
 	gzFile out = gzdopen(fd,"wb");
 	return out;
@@ -112,8 +112,8 @@ gzFile open_input_stream(const char *filename){
 	if (strncmp(filename,"-", 1)==0 || !strcmp(filename,"")) {
 		fd = STDIN_FILENO;
 	} else {
-		fd = open(filename, O_CREAT | O_RDONLY , 0666 );
-		if (fd==-1) err(1, "Failed to create input file (%s)", filename);
+		fd = open(filename, O_CREAT | O_BINARY| O_RDONLY , 0666 );
+		if (fd==-1) fprintf(stderr, "Failed to create input file (%s)", filename);
 	}
 	gzFile in = gzdopen(fd,"rb");
 	return in;

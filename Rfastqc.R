@@ -353,7 +353,7 @@ draw_nucleotide_distribution<-function(outfile_prefix,Data){
 	cat("Done nucleotide distribution\n",file=stderr())
 }
 
-dyn.load(paste(dirname(program),"Rgzfastq_uniq_3.so",sep="/"))
+dyn.load(paste(dirname(program),ifelse(grepl('Linux|Darwin',Sys.info()["sysname"],perl=T),"Rgzfastq_uniq_3.so","Rgzfastq_uniq_3.dll"),sep="/"))
 List<-.Call("qsort_hash_count",fastq1,fastq2)
 barplot_Data_range(outfile,List[[1]])
 plot_Data_range(outfile,List[[1]])
