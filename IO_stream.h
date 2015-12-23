@@ -55,7 +55,11 @@ FILE *fopen_input_stream(const char *filename){
 	if (strncmp(filename,"-", 1)==0 || !strcmp(filename,"")) {
 		fd = STDIN_FILENO;
 	} else {
-		fd = open(filename, O_CREAT | O_BINARY | O_RDONLY , 0666 );
+#if defined(__APPLE__) && defined(__MACH__) || defined(unix) || defined(linux)
+		fd = open(filename, O_CREAT | O_RDONLY , 0666 );
+#else
+		fd = _open(filename, _O_CREAT|_O_BINARY | _O_RDONLY , 0666 );
+#endif
 		if (fd==-1) fprintf(stderr, "Failed to create input file (%s)", filename);
 	}
 	FILE *in = fdopen(fd,"rb");
@@ -67,7 +71,11 @@ FILE *fopen_output_stream(const char *filename) {
 	if (strncmp(filename,"-", 1)==0 || !strcmp(filename,"")) {
 		fd = STDOUT_FILENO;
 	} else {
-		fd = open(filename, O_CREAT | O_BINARY | O_WRONLY | O_TRUNC, 0666 );
+#if defined(__APPLE__) && defined(__MACH__) || defined(unix) || defined(linux)
+		fd = open(filename, O_CREAT | O_WRONLY | O_TRUNC, 0666 );
+#else
+		fd = _open(filename, _O_CREAT|_O_BINARY | _O_WRONLY | _O_APPEND |_O_TRUNC, 0666 );
+#endif
 		if (fd==-1) fprintf(stderr, "Failed to create output file (%s)", filename);
 	}
 	FILE *out = fdopen(fd,"wb");
@@ -93,7 +101,11 @@ gzFile open_output_stream(char* filename) {
 	if (strncmp(filename,"-", 1)==0 || !strcmp(filename,"")) {
 		fd = STDOUT_FILENO;
 	} else {
-		fd = open(filename, O_CREAT |O_BINARY| O_WRONLY | O_TRUNC, 0666 );
+#if defined(__APPLE__) && defined(__MACH__) || defined(unix) || defined(linux)
+		fd = open(filename, O_CREAT | O_WRONLY | O_TRUNC, 0666 );
+#else
+		fd = _open(filename, _O_CREAT|_O_BINARY | _O_WRONLY | _O_APPEND |_O_TRUNC, 0666 );
+#endif
 		if (fd==-1) fprintf(stderr, "Failed to create output file (%s)", filename);
 	}
 	gzFile out = gzdopen(fd,"wb");
@@ -112,7 +124,11 @@ gzFile open_input_stream(const char *filename){
 	if (strncmp(filename,"-", 1)==0 || !strcmp(filename,"")) {
 		fd = STDIN_FILENO;
 	} else {
-		fd = open(filename, O_CREAT | O_BINARY| O_RDONLY , 0666 );
+#if defined(__APPLE__) && defined(__MACH__) || defined(unix) || defined(linux)
+		fd = open(filename, O_CREAT | O_RDONLY, 0666 );
+#else
+		fd = _open(filename, _O_CREAT|_O_BINARY | _O_RDONLY , 0666 );
+#endif
 		if (fd==-1) fprintf(stderr, "Failed to create input file (%s)", filename);
 	}
 	gzFile in = gzdopen(fd,"rb");
