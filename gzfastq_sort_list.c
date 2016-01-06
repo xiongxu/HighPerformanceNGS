@@ -95,11 +95,11 @@ int comp_seq(const void *a, const void *b) {
 
 Fastq *dump_array(List *chunk,long long begin){
 	Fastq *arrays=(Fastq *)calloc(chunk->count,sizeof(Fastq));
-	int i=0;
+	int i=chunk->count;
 	Node *n = chunk->head;
 	while (n) {
 		Node *next_n = n->next;
-		arrays[i++]=*(Fastq *)n->data;
+		arrays[--i]=*(Fastq *)n->data;
 		n = next_n;
 	}
 	fprintf(stderr,"done dump_array at %.3f s\n",(double)(usec()-begin)/CLOCKS_PER_SEC);
