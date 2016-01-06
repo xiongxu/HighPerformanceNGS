@@ -10,7 +10,7 @@ STLIBNAME=$(LIBNAME).$(STLIBSUFFIX)
 STLIB_MAKE_CMD=ar rcs $(STLIBNAME)
 
 .PHONY: all clean
-all:  hiredisDir gzfastq_sort gzfastq_sort_list gzfastq_uniqQ pick_pair fastq_count fastq2twobit twoBit2seq gzfastq_uniq_sort fastq_count_kthread fastq_trim gzfastq_uniq gzfastq_sample bam2depth bam2wig bam_sliding_count $(STLIBNAME) Rgzfastq_uniq.so
+all:  hiredisDir gzfastq_sort gzfastq_sort_list gzfastq_mrle gzfastq_uniqQ pick_pair fastq_count fastq2twobit twoBit2seq gzfastq_uniq_sort fastq_count_kthread fastq_trim gzfastq_uniq gzfastq_sample bam2depth bam2wig bam_sliding_count $(STLIBNAME) Rgzfastq_uniq.so
 SUBDIRS = `find $(CURDIR) -maxdepth 1 -type d | sed "1d"|grep -E "hiredis|samtools-0.1.19"`
 $(CURDIR)/zlib-1.2.8:zlib-1.2.8.tar.gz
 	tar -zxvf zlib-1.2.8.tar.gz && mv zlib-1.2.8 zlib;\
@@ -98,6 +98,10 @@ gzfastq_sample : gzfastq_sample.o $(CURDIR)/fastq-tools-0.7/src/librng.a
 gzfastq_sort_list.o:gzfastq_sort_list.c
 	$(CC) -c $(CFLAGS) $(DFLAGS) $(INCLUDES) $< -o $@
 gzfastq_sort_list:gzfastq_sort_list.o list.o
+	$(CC) $(CFLAGS) ${DFLAGS} $^ -o $@ $(LIBPATH) $(LDFLAGS)
+gzfastq_mrle.o:gzfastq_mrle.c
+	$(CC) -c $(CFLAGS) $(DFLAGS) $(INCLUDES) $< -o $@
+gzfastq_mrle:gzfastq_mrle.o list.o
 	$(CC) $(CFLAGS) ${DFLAGS} $^ -o $@ $(LIBPATH) $(LDFLAGS)
 
 $(CURDIR)/samtools-0.1.19: $(CURDIR)/samtools-0.1.19.tar.bz2 $(CURDIR)/zlib-1.2.8
