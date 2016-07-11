@@ -149,8 +149,8 @@ void count_read(gzFile fq,uint32_t *sumFreq,uint32_t *minLen,uint32_t *maxLen,ui
 void display_usage(char * argv[]){
 	char *buffer=(char* )malloc(10240*sizeof(char));
 	const char* usage=
-"\nCopyright (c) GeneDock 2015\n" \
-"Contact: XiongXu <xuxiong@genedock.com> <xiongxu@me.com> \n" \
+"\nCopyright (c) InfiniGenomics 2016\n" \
+"Contact: XiongXu <xuxiong19880610@163.com> <xiongxu@me.com> \n" \
 "Discription:\n  This program is used for counting the read count with or without gzip compressed fastq files .\n" \
 "Usage: %s file1.fq file2.fq ... [-o outfile] [-t thread] [-H] [-L] [-h] \n" \
 "Example1:\n  %s /share/seq_dir1/Item/prenatal/140129_SN1116_0776_AC2WTGACXX/13C37198_L7_I012.R1.clean.fastq.gz \n" \
