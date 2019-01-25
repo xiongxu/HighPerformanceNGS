@@ -87,20 +87,19 @@ int fetch_func(const bam1_t *b, void *data) {
 	DataBuf *databuf=(DataBuf *)data;
 	uint32_t *cigar = bam1_cigar(b);
 	const bam1_core_t *c = &b->core;
-	if (c->flag&BAM_FUNMAP) return 0;
-	if (b->core.tid < 0) return 0;
+	if (c->flag&BAM_DEF_MASK || b->core.tid < 0) return 0;
 	int i, l;
 	char *buf=(char *)malloc(32*sizeof(char));
 	unsigned int temp_start= c->pos;
 	for (i = l = 0; i < c->n_cigar; ++i) {
-		int op = cigar[i]&0xf;
+		int op = bam_cigar_op(cigar[i]);
 		if (op == BAM_CINS) continue;
-		if ( op == BAM_CDEL || op == BAM_CREF_SKIP){
-			l = cigar[i]>>4;
+		//if ( op == BAM_CDEL || op == BAM_CREF_SKIP || op ==BAM_CSOFT_CLIP || op == BAM_CHARD_CLIP) {
+		if ( op == BAM_CDEL || op == BAM_CREF_SKIP) {
+			l = bam_cigar_oplen(cigar[i]);
 			temp_start+=l;
-		}
-		else if (op == BAM_CMATCH ) {
-			l = cigar[i]>>4;
+		}else if (op == BAM_CMATCH ) {
+			l = bam_cigar_oplen(cigar[i]);
 			insertInt2Hash(databuf->Start,temp_start,buf);
 			temp_start+=l;
 			insertInt2Hash(databuf->End,temp_start,buf);
@@ -142,24 +141,24 @@ void overlap(int *j,int ref,int *subject_count,DataBuf *databuf,int windows,doub
 	*subject_count=0;
 	while (*j<=windows){
 		window_start=globalArgs.window*(*j);
-		window_end= (*j+1)*globalArgs.window-1;
+		window_end= (*j+1)*globalArgs.window;
 		if (window_end>databuf->fp->header->target_len[ref]){
 			window_end=databuf->fp->header->target_len[ref];
 		}
 		if (last_end<window_start) {
 			break;
 		}else{
-			if (last_start<window_start) {
-				if (last_end<window_end) {
+			if (last_start<=window_start) {
+				if (last_end<=window_end) {
 					bins[*j]+=(last_end-window_start)*last_depth;
 					(*subject_count)++;
 					break;
 				}else{
-					bins[(*j)++]+=(window_end-window_start+1)*last_depth;
+					bins[(*j)++]+=(window_end-window_start)*last_depth;
 					(*subject_count)++;
 				}
 			}else{
-				if (last_start<=window_end) {
+				if (last_start<window_end) {
 					if (last_end<=window_end) {
 						bins[*j]+=(last_end-last_start)*last_depth;
 						(*subject_count)++;
@@ -240,7 +239,7 @@ void output_bins(DataBuf *databuf,int ref,double *bins,int windows,FILE *stream)
 	int i;
 	for (i=0;i<windows ;i++ ){
 		int window_start = globalArgs.window*i;
-		int window_end = globalArgs.window*(i+1)-1 >databuf->fp->header->target_len[ref] ? databuf->fp->header->target_len[ref] : globalArgs.window*(i+1)-1;
+		int window_end = globalArgs.window*(i+1) >databuf->fp->header->target_len[ref] ? databuf->fp->header->target_len[ref] : globalArgs.window*(i+1);
 		fprintf(stream,"%s\t%d\t%d\t%.2f\n",
 			databuf->fp->header->target_name[ref],window_start,window_end,bins[i]/globalArgs.window);
 	}

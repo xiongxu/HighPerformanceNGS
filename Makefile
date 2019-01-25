@@ -2,8 +2,8 @@ CC=		gcc
 CFLAGS=		-O3 -Wall -W -Wstrict-prototypes -Wwrite-strings -g -ggdb
 LDFLAGS=	-lz 
 DFLAGS=		
-INCLUDES=	-I. -I$(CURDIR)/zlib-1.2.8/include -I/usr/local/include
-LIBPATH=	-L. -L$(CURDIR)/zlib-1.2.8/lib -L/usr/local/lib
+INCLUDES=	-I. -I$(CURDIR)/zlib-1.2.11/include -I/usr/local/include
+LIBPATH=	-L. -L$(CURDIR)/zlib-1.2.11/lib -L/usr/local/lib
 LIBNAME=	liblist
 STLIBSUFFIX=a
 STLIBNAME=$(LIBNAME).$(STLIBSUFFIX)
@@ -12,11 +12,13 @@ STLIB_MAKE_CMD=ar rcs $(STLIBNAME)
 .PHONY: all clean
 all:  hiredisDir gzfastq_sort gzfastq_sort_list gzfastq_mrle gzfastq_uniqQ pick_pair fastq_count fastq2twobit twoBit2seq gzfastq_uniq_sort fastq_count_kthread fastq_trim gzfastq_uniq gzfastq_sample bam2depth bam2wig bam_sliding_count $(STLIBNAME) Rgzfastq_uniq.so
 SUBDIRS = `find $(CURDIR) -maxdepth 1 -type d | sed "1d"|grep -E "hiredis|samtools-0.1.19"`
-$(CURDIR)/zlib-1.2.8:zlib-1.2.8.tar.gz
-	tar -zxvf zlib-1.2.8.tar.gz && mv zlib-1.2.8 zlib;\
+
+$(CURDIR)/zlib-1.2.11:
+	wget http://www.zlib.net/zlib-1.2.11.tar.gz; \
+	tar -zxvf zlib-1.2.11.tar.gz && mv zlib-1.2.11 zlib;\
 	cd zlib;\
-	test -d $(CURDIR)/zlib-1.2.8 || mkdir -p $(CURDIR)/zlib-1.2.8;\
-	./configure --prefix=$(CURDIR)/zlib-1.2.8;\
+	test -d $(CURDIR)/zlib-1.2.11 || mkdir -p $(CURDIR)/zlib-1.2.11;\
+	./configure --prefix=$(CURDIR)/zlib-1.2.11;\
 	make;\
 	make install;\
 	cd $(CURDIR) && rm -rf zlib
@@ -38,7 +40,7 @@ hashtbl.o:hashtbl.c
 
 pick_pair.o:pick_pair.c
 	$(CC) -c $(CFLAGS) $(DFLAGS) $(INCLUDES) $< -o $@
-pick_pair:pick_pair.o $(CURDIR)/zlib-1.2.8
+pick_pair:pick_pair.o $(CURDIR)/zlib-1.2.11
 	$(CC) $(CFLAGS) ${DFLAGS} $< -o $@ $(LIBPATH) $(LDFLAGS)
 gzfastq_sort.o:gzfastq_sort.c
 	$(CC) -c $(CFLAGS) $(DFLAGS) $(INCLUDES) $< -o $@
@@ -68,7 +70,7 @@ gzfastq_uniq.o:gzfastq_uniq.c
 gzfastq_uniq:gzfastq_uniq.o
 	$(CC) $(CFLAGS) ${DFLAGS} $< -o $@ $(LIBPATH) -L./hiredis $(LDFLAGS) -lhiredis
 
-gzfastq_uniqQ.o:gzfastq_uniqQ.c $(CURDIR)/zlib-1.2.8
+gzfastq_uniqQ.o:gzfastq_uniqQ.c $(CURDIR)/zlib-1.2.11
 	$(CC) -c $(CFLAGS) $(DFLAGS) $(INCLUDES) -I./hiredis $< -o $@
 gzfastq_uniqQ:gzfastq_uniqQ.o list.o
 	$(CC) $(CFLAGS) ${DFLAGS} $^ -o $@ $(LIBPATH) -L./hiredis $(LDFLAGS) -lhiredis
@@ -104,7 +106,7 @@ gzfastq_mrle.o:gzfastq_mrle.c
 gzfastq_mrle:gzfastq_mrle.o list.o
 	$(CC) $(CFLAGS) ${DFLAGS} $^ -o $@ $(LIBPATH) $(LDFLAGS)
 
-$(CURDIR)/samtools-0.1.19: $(CURDIR)/samtools-0.1.19.tar.bz2 $(CURDIR)/zlib-1.2.8
+$(CURDIR)/samtools-0.1.19: $(CURDIR)/samtools-0.1.19.tar.bz2 $(CURDIR)/zlib-1.2.11
 	tar -jxvf samtools-0.1.19.tar.bz2;\
 	cd $(CURDIR)/samtools-0.1.19;\
 	make INCLUDES="$(INCLUDES)" LIBPATH="$(LIBPATH)";\
@@ -135,7 +137,7 @@ libhashtbl.a:hashtbl.o
 Rgzfastq_uniq.so:Rgzfastq_uniq.c libhashtbl.a
 	gcc -shared -std=gnu99 -fPIC -g -O2 $< -o $@ $(INCLUDES) -I`Rscript -e "cat(Sys.getenv('R_INCLUDE_DIR'));"` -DNDEBUG  -L/usr/local/lib -L`Rscript -e "cat(Sys.getenv('R_HOME'));"`/lib -L. -lR -lhashtbl $(LDFLAGS)
 clean:
-	rm -rf fastq-tools-0.7 hiredisDir gzfastq_sort gzfastq_sort_list pick_pair gzfastq_uniqQ fastq_count fastq_count_kthread fastq_trim fastq2twobit twoBit2seq gzfastq_uniq gzfastq_sample bam_sliding_count bam2depth bam2wig gzfastq_uniq_sort $(STLIBNAME) samtools-0.1.19 zlib-1.2.8  libhashtbl.a Rgzfastq_uniq.so *.o fastq-tools-0.7/src/librng.a ; \
+	rm -rf fastq-tools-0.7 hiredisDir gzfastq_sort gzfastq_sort_list pick_pair gzfastq_uniqQ fastq_count fastq_count_kthread fastq_trim fastq2twobit twoBit2seq gzfastq_uniq gzfastq_sample bam_sliding_count bam2depth bam2wig gzfastq_uniq_sort $(STLIBNAME) samtools-0.1.19 zlib-1.2.11  libhashtbl.a Rgzfastq_uniq.so *.o fastq-tools-0.7/src/librng.a ; \
 	wdir=`pwd`; \
 	cd ./hiredis;\
 	$(MAKE) clean;\
